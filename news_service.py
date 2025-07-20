@@ -110,9 +110,11 @@ class NewsService:
         
         logger.info(f"Fetched {len(unique_articles)} unique articles from {len(keyword_searches)} keyword searches")
         if unique_articles:
-            return unique_articles[:20]
+            return unique_articles[:20], False  # Live articles
         else:
-            return self.load_fallback_articles()  # Return top 20 most recent
+            fallback = self.load_fallback_articles()
+            return fallback, True  # Fallback used
+
     
     def format_article_for_email(self, article, index):
         """Format a single article for email content"""
