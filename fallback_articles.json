@@ -1,0 +1,24 @@
+[
+  {
+    "title": "Unity Releases New XR Toolkit",
+    "description": "Unity launches a toolkit that speeds up AR/VR prototyping for developers.",
+    "url": "https://example.com/unity-xr-toolkit",
+    "urlToImage": "https://example.com/unity.jpg",
+    "publishedAt": "2025-07-19T10:15:00Z",
+    "formattedDate": "2025-07-19 10:15",
+    "source": { "name": "Unity Blog" },
+    "author": "Unity Team",
+    "matchedKeyword": "Unity 3D"
+  },
+  {
+    "title": "Blender 4.0 Beta Adds Real‑Time GI",
+    "description": "The upcoming Blender 4.0 introduces real‑time global illumination for VR scenes.",
+    "url": "https://example.com/blender-4-beta",
+    "urlToImage": "https://example.com/blender.jpg",
+    "publishedAt": "2025-07-18T18:45:00Z",
+    "formattedDate": "2025-07-18 18:45",
+    "source": { "name": "BlenderNation" },
+    "author": "Alex Chen",
+    "matchedKeyword": "Blender 3D"
+  }
+]
