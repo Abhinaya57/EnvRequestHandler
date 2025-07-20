@@ -15,7 +15,7 @@ class MoodService:
             if not api_key:
                 raise ValueError("GEMINI_API_KEY environment variable not set")
             
-            self.client = genai.Client(api_key=api_key)
+            genai.configure(api_key=api_key)
             logger.info("MoodService initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize MoodService: {e}")
@@ -79,13 +79,8 @@ class MoodService:
             Focus on technology trends, developer sentiment, industry outlook, and innovation pace.
             """
             
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=[types.Content(role="user", parts=[types.Part(text=prompt)])],
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                ),
-            )
+           model = genai.GenerativeModel("gemini-1.5-flash")
+           response = model.generate_content(prompt)
             
             if response.text:
                 result = json.loads(response.text)
