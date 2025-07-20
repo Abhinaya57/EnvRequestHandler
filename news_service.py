@@ -3,6 +3,7 @@ import requests
 import logging
 from datetime import datetime
 import time
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +109,10 @@ class NewsService:
         unique_articles.sort(key=lambda x: x.get('publishedAt', ''), reverse=True)
         
         logger.info(f"Fetched {len(unique_articles)} unique articles from {len(keyword_searches)} keyword searches")
-        return unique_articles[:20]  # Return top 20 most recent
+        if unique_articles:
+            return unique_articles[:20]
+        else:
+            return self.load_fallback_articles()  # Return top 20 most recent
     
     def format_article_for_email(self, article, index):
         """Format a single article for email content"""
@@ -142,3 +146,17 @@ class NewsService:
         content += f"📈 Sources: News channels, tech blogs, industry publications, and more\n"
         
         return content
+    
+    def load_fallback_articles(self):
+        """Load fallback articles from local JSON file"""
+        fallback_path = os.path.join(os.path.dirname(__file__), "fallback_articles.json")
+        try:
+            with open(fallback_path, "r", encoding="utf-8") as f:
+                articles = json.load(f)
+                logger.warning("Loaded fallback articles due to NewsAPI failure.")
+                return articles
+        except Exception as e:
+            logger.error(f"Error loading fallback articles: {e}")
+            return []
+
+    
