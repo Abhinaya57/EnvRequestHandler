@@ -79,8 +79,8 @@ class MoodService:
             Focus on technology trends, developer sentiment, industry outlook, and innovation pace.
             """
             
-           model = genai.GenerativeModel("gemini-1.5-flash")
-           response = model.generate_content(prompt)
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            response = model.generate_content(prompt)
             
             if response.text:
                 result = json.loads(response.text)
