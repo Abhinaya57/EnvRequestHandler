@@ -3,7 +3,7 @@ import logging
 import requests
 import re
 import google.generativeai as genai
-from google.genai import types
+import google.generativeai as genai 
 
 logger = logging.getLogger(__name__)
 
