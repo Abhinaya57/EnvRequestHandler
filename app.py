@@ -64,7 +64,9 @@ atexit.register(lambda: scheduler.shutdown())
 def dashboard():
     """Main dashboard showing latest news"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, used_fallback = news_service.fetch_niche_tech_news()
+        if used_fallback:
+            flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
         return render_template('dashboard.html', articles=articles)
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
