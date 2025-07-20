@@ -2,6 +2,7 @@ import os
 import requests
 import logging
 from datetime import datetime
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +91,7 @@ class NewsService:
                             
                 else:
                     logger.warning(f"Search failed for '{search_query}' with status {response.status_code}")
-                    
+                time.sleep(1)
             except Exception as e:
                 logger.error(f"Error searching for '{search_query}': {e}")
                 continue
