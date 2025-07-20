@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class SummarizerService:
     def __init__(self):
-        self.gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
     
     def fetch_article_content(self, url):
         """Fetch article content from URL"""
@@ -149,10 +149,9 @@ class SummarizerService:
             {content}"""
             
             # Using Gemini 2.5 Flash for fast, efficient summarization
-            response = self.gemini_client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
+            model = genai.GenerativeModel("gemini-1.5-flash")  # Use the latest available
+            response = model.generate_content(prompt)
+
             
             summary = response.text.strip() if response.text else ""
             return summary
