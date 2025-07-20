@@ -1,0 +1,32 @@
+{
+  "total_xp": 3,
+  "articles_read": 0,
+  "summaries_generated": 1,
+  "topics_discovered": [],
+  "achievements_unlocked": [],
+  "learning_paths": {
+    "ar_developer": {
+      "current_level": 1,
+      "xp": 0
+    },
+    "vr_developer": {
+      "current_level": 1,
+      "xp": 0
+    },
+    "unity_developer": {
+      "current_level": 1,
+      "xp": 0
+    },
+    "blender_artist": {
+      "current_level": 1,
+      "xp": 0
+    },
+    "game_developer": {
+      "current_level": 1,
+      "xp": 0
+    }
+  },
+  "daily_streak": 0,
+  "last_active": null,
+  "created_date": "2025-07-20T11:19:33.924150"
+}

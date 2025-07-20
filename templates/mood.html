@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}News Mood Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-1">
+                        <i data-feather="activity" class="me-2"></i>
+                        News Mood Dashboard
+                    </h1>
+                    <p class="text-muted mb-0">Analyze trending topics and sentiment in XR/3D development news</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                        <i data-feather="arrow-left" class="me-1"></i>
+                        Back to News
+                    </a>
+                    <button class="btn btn-outline-primary" onclick="refreshMoodData()">
+                        <i data-feather="refresh-cw" class="me-1"></i>
+                        Refresh Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if mood_data %}
+    <!-- Mood Overview -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="card-title">
+                                <i data-feather="heart" class="me-2"></i>
+                                Overall News Mood
+                            </h5>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-{{ 'success' if mood_data.mood == 'positive' or mood_data.mood == 'excited' else 'warning' if mood_data.mood == 'neutral' else 'info' if mood_data.mood == 'cautious' else 'danger' }} fs-6 me-2">
+                                    {{ mood_data.mood|title }}
+                                </span>
+                                <small class="text-muted">{{ (mood_data.confidence * 100)|round(1) }}% confidence</small>
+                            </div>
+                            <p class="text-muted">{{ mood_data.mood_description or 'No description available' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Analysis Stats</h6>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="border-end">
+                                        <h4 class="mb-0 text-primary">{{ mood_data.total_articles or 0 }}</h4>
+                                        <small class="text-muted">Articles</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <h4 class="mb-0 text-info">{{ mood_data.trending_topics|length or 0 }}</h4>
+                                    <small class="text-muted">Topics</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-primary bg-opacity-10 border-primary">
+                <div class="card-body text-center">
+                    <i data-feather="trending-up" class="text-primary mb-2" style="width: 3rem; height: 3rem;"></i>
+                    <h6 class="mb-1">Mood Score</h6>
+                    <h2 class="mb-0 text-primary">{{ (mood_data.confidence * 100)|round(0) }}%</h2>
+                    <small class="text-muted">Confidence Level</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trending Topics -->
+    {% if mood_data.trending_topics %}
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i data-feather="trending-up" class="me-2"></i>
+                        Trending Topics
+                    </h5>
+                    <div class="row">
+                        {% for topic in mood_data.trending_topics %}
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <span class="badge bg-secondary bg-opacity-75 p-2 w-100">
+                                <i data-feather="tag" class="me-1" style="width: 0.875rem; height: 0.875rem;"></i>
+                                {{ topic }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Topic Analysis -->
+    {% if mood_data.topic_analysis %}
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i data-feather="pie-chart" class="me-2"></i>
+                        Topic Analysis
+                    </h5>
+                    <div class="row">
+                        {% for item in mood_data.topic_analysis %}
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="border rounded p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">{{ item.topic }}</h6>
+                                    <span class="badge bg-primary">{{ item.count }}</span>
+                                </div>
+                                <div class="progress mb-1" style="height: 6px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ item.percentage }}%"></div>
+                                </div>
+                                <small class="text-muted">{{ item.percentage }}% of articles</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <!-- No Data State -->
+    <div class="row">
+        <div class="col text-center py-5">
+            <i data-feather="bar-chart-3" class="text-muted mb-3" style="width: 4rem; height: 4rem;"></i>
+            <h4 class="text-muted">No Mood Data Available</h4>
+            <p class="text-muted">Load some articles first to analyze the news mood</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                <i data-feather="arrow-left" class="me-1"></i>
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Articles Preview -->
+    {% if articles %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i data-feather="file-text" class="me-2"></i>
+                        Recent Articles ({{ articles|length }})
+                    </h5>
+                    <div class="row">
+                        {% for article in articles[:6] %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="border rounded p-3 h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-secondary">{{ article.source.name if article.source else 'Unknown' }}</span>
+                                    {% if article.formattedDate %}
+                                    <small class="text-muted">{{ article.formattedDate }}</small>
+                                    {% endif %}
+                                </div>
+                                <h6 class="mb-2">{{ article.title[:60] }}{% if article.title|length > 60 %}...{% endif %}</h6>
+                                <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i data-feather="external-link" class="me-1"></i>
+                                    Read
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if articles|length > 6 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                            <i data-feather="eye" class="me-1"></i>
+                            View All {{ articles|length }} Articles
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function refreshMoodData() {
+    const btn = event.target.closest('button');
+    const icon = btn.querySelector('i');
+    
+    btn.disabled = true;
+    icon.style.animation = 'spin 1s linear infinite';
+    
+    fetch('/api/mood')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error refreshing mood data: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        })
+        .finally(() => {
+            btn.disabled = false;
+            icon.style.animation = '';
+        });
+}
+
+// Add spin animation for refresh icon
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

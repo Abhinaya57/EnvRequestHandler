@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration - XR News Aggregator{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-1">
+                <i data-feather="settings" class="me-2"></i>
+                Configuration
+            </h1>
+            <p class="text-muted">Manage your news aggregation and email settings</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Email Configuration -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="mail" class="me-2"></i>
+                        Email Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i data-feather="user" class="me-1"></i>
+                            Email User
+                        </label>
+                        <input type="email" class="form-control" value="{{ config.email_user }}" readonly>
+                        <div class="form-text">The Gmail account used to send emails</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i data-feather="users" class="me-1"></i>
+                            Recipients
+                        </label>
+                        <textarea class="form-control" rows="2" readonly>{{ config.email_to }}</textarea>
+                        <div class="form-text">Comma-separated list of email recipients</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i data-feather="key" class="me-1"></i>
+                            App Password Status
+                        </label>
+                        <div class="input-group">
+                            <span class="form-control">
+                                {% if config.email_user %}
+                                    <i data-feather="check-circle" class="text-success me-1"></i>
+                                    Configured
+                                {% else %}
+                                    <i data-feather="x-circle" class="text-danger me-1"></i>
+                                    Not Configured
+                                {% endif %}
+                            </span>
+                            <a href="{{ url_for('test_email') }}" class="btn btn-outline-primary">
+                                <i data-feather="send" class="me-1"></i>
+                                Test Email
+                            </a>
+                        </div>
+                        <div class="form-text">Gmail App Password for authentication</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- News API Configuration -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="globe" class="me-2"></i>
+                        News API Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i data-feather="key" class="me-1"></i>
+                            API Key Status
+                        </label>
+                        <div class="form-control">
+                            {% if config.news_api_key %}
+                                <i data-feather="check-circle" class="text-success me-1"></i>
+                                Configured ({{ config.news_api_key[:8] }}...)
+                            {% else %}
+                                <i data-feather="x-circle" class="text-danger me-1"></i>
+                                Not Configured
+                            {% endif %}
+                        </div>
+                        <div class="form-text">NewsAPI key for fetching articles</div>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('update_keywords') }}">
+                        <div class="mb-3">
+                            <label for="keywords" class="form-label">
+                                <i data-feather="search" class="me-1"></i>
+                                Search Keywords
+                            </label>
+                            <textarea class="form-control" id="keywords" name="keywords" rows="3" placeholder="Enter search keywords...">{{ config.keywords }}</textarea>
+                            <div class="form-text">Keywords to search for in news articles (use OR to separate terms)</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="save" class="me-1"></i>
+                            Update Keywords
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gemini AI Configuration -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="zap" class="me-2"></i>
+                        Gemini AI Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i data-feather="key" class="me-1"></i>
+                            Gemini API Key Status
+                        </label>
+                        <div class="input-group">
+                            <span class="form-control">
+                                {% if 'GEMINI_API_KEY' in request.environ %}
+                                    <i data-feather="check-circle" class="text-success me-1"></i>
+                                    Configured
+                                {% else %}
+                                    <i data-feather="x-circle" class="text-danger me-1"></i>
+                                    Not Configured
+                                {% endif %}
+                            </span>
+                            <a href="{{ url_for('test_gemini') }}" class="btn btn-outline-info">
+                                <i data-feather="cpu" class="me-1"></i>
+                                Test AI
+                            </a>
+                        </div>
+                        <div class="form-text">Google Gemini AI API key for smart article summaries</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <div class="d-flex">
+                            <i data-feather="info" class="me-2 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong>AI Features Available:</strong>
+                                <ul class="mb-0 mt-1">
+                                    <li>5-point article summaries</li>
+                                    <li>Professional takeaways for XR/gaming developers</li>
+                                    <li>Fast generation with Gemini 2.5 Flash</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="bar-chart-2" class="me-2"></i>
+                        System Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="border-end">
+                                <h6 class="mb-1">{{ articles|length if articles else 0 }}</h6>
+                                <small class="text-muted">Articles Today</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border-end">
+                                <h6 class="mb-1">08:00</h6>
+                                <small class="text-muted">Daily Send</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <h6 class="mb-1">48hrs</h6>
+                            <small class="text-muted">Time Range</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Information -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="clock" class="me-2"></i>
+                        Automation Schedule
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i data-feather="sunrise" class="text-primary"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Daily Email</h6>
+                                    <small class="text-muted">8:00 AM every day</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i data-feather="refresh-cw" class="text-success"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Auto Refresh</h6>
+                                    <small class="text-muted">Real-time updates</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-info bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i data-feather="zap" class="text-info"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Manual Trigger</h6>
+                                    <small class="text-muted">Available anytime</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Environment Variables Help -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i data-feather="help-circle" class="me-2"></i>
+                        Environment Variables
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">The following environment variables are required for the application to function:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Email Settings</h6>
+                            <ul class="list-unstyled">
+                                <li><code>EMAIL_USER</code> - Gmail address</li>
+                                <li><code>EMAIL_PASS</code> - Gmail App Password</li>
+                                <li><code>EMAIL_TO</code> - Recipient emails (comma-separated)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>API Settings</h6>
+                            <ul class="list-unstyled">
+                                <li><code>NEWS_API_KEY</code> - NewsAPI.org API key</li>
+                                <li><code>SESSION_SECRET</code> - Flask session secret (optional)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i data-feather="info" class="me-2"></i>
+                        <strong>Note:</strong> Environment variables are configured in your hosting platform's settings panel.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
