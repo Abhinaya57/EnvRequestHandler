@@ -154,12 +154,8 @@ def news_mood():
 def learning_paths():
     """Gamified learning paths for XR/3D/Game development"""
     try:
-        articles, used_fallback = news_service.fetch_niche_tech_news()
-        if used_fallback:
-            flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
-            logger.warning("Fallback articles used due to NewsAPI rate limit.")
         learning_data = gamification_service.get_learning_dashboard_data()
-        return render_template('learning.html', learning_data=learning_data, articles=articles)
+        return render_template('learning.html', learning_data=learning_data)
     except Exception as e:
         logger.error(f"Error loading learning paths: {e}")
         flash(f"Error loading learning data: {str(e)}", 'danger')
