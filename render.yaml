@@ -19,6 +19,7 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python worker.py
+    schedule: "30 2 * * *"  # <-- Runs daily at 2:30 AM UTC = 8:00 AM IST
     envVars:
       - key: EMAIL_USER
         fromEnvVar: EMAIL_USER
