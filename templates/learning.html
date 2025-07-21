@@ -8,6 +8,9 @@
         <h5 class="text-success">🚀 Explore Your XR Learning Path</h5>
         <div class="row" id="learningPathCards"></div>
     </div>
+
+    <!-- Path Levels (Hidden initially, loaded dynamically) -->
+    <div id="pathLevelsContainer" class="d-none"></div>
 </div>
 
 <!-- Learning Path Modal -->
@@ -52,7 +55,12 @@
 
 {% block scripts %}
 <script src="https://unpkg.com/feather-icons"></script>
+<script src="/static/js/learning_paths.js"></script>
 <script>
-// The scripts below remain the same but exclude all code related to articlesData, trackArticleRead, and generateSummaryWithXP.
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof renderLearningPaths === 'function') {
+            renderLearningPaths();
+        }
+    });
 </script>
 {% endblock %}
