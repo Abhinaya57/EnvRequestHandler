@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: ai-news-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: EMAIL_USER
+        fromEnvVar: EMAIL_USER
+      - key: EMAIL_TO
+        fromEnvVar: EMAIL_TO
+      - key: NEWS_API_KEY
+        fromEnvVar: NEWS_API_KEY
+      - key: SESSION_SECRET
+        fromEnvVar: SESSION_SECRET
+
+  - type: worker
+    name: daily-email-worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python worker.py
+    envVars:
+      - key: EMAIL_USER
+        fromEnvVar: EMAIL_USER
+      - key: EMAIL_TO
+        fromEnvVar: EMAIL_TO
+      - key: NEWS_API_KEY
+        fromEnvVar: NEWS_API_KEY
+      - key: SESSION_SECRET
+        fromEnvVar: SESSION_SECRET
