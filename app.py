@@ -67,6 +67,7 @@ def dashboard():
         articles, used_fallback = news_service.fetch_niche_tech_news()
         if used_fallback:
             flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
+            logger.warning("Fallback articles used due to NewsAPI rate limit.")
         return render_template('dashboard.html', articles=articles)
     except Exception as e:
         logger.error(f"Error loading dashboard: {e}")
@@ -80,6 +81,7 @@ def refresh_news():
         articles, used_fallback = news_service.fetch_niche_tech_news()
         if used_fallback:
             flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
+            logger.warning("Fallback articles used due to NewsAPI rate limit.")
         flash(f"Refreshed! Found {len(articles)} articles", 'success')
         return redirect(url_for('dashboard'))
     except Exception as e:
@@ -94,6 +96,7 @@ def send_email_now():
         articles, used_fallback = news_service.fetch_niche_tech_news()
         if used_fallback:
             flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
+            logger.warning("Fallback articles used due to NewsAPI rate limit.")
         if articles and len(articles) > 0:
             email_service.send_news_email(articles)
             flash("Email sent successfully!", 'success')
@@ -139,6 +142,7 @@ def news_mood():
         articles, used_fallback = news_service.fetch_niche_tech_news()
         if used_fallback:
             flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
+            logger.warning("Fallback articles used due to NewsAPI rate limit.")
         mood_data = mood_service.analyze_news_mood(articles)
         return render_template('mood.html', mood_data=mood_data, articles=articles)
     except Exception as e:
@@ -153,6 +157,7 @@ def learning_paths():
         articles, used_fallback = news_service.fetch_niche_tech_news()
         if used_fallback:
             flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
+            logger.warning("Fallback articles used due to NewsAPI rate limit.")
         learning_data = gamification_service.get_learning_dashboard_data()
         return render_template('learning.html', learning_data=learning_data, articles=articles)
     except Exception as e:
