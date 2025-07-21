@@ -77,7 +77,9 @@ def dashboard():
 def refresh_news():
     """Manually refresh news articles"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, used_fallback = news_service.fetch_niche_tech_news()
+        if used_fallback:
+            flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
         flash(f"Refreshed! Found {len(articles)} articles", 'success')
         return redirect(url_for('dashboard'))
     except Exception as e:
@@ -89,7 +91,9 @@ def refresh_news():
 def send_email_now():
     """Manually trigger email sending"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, used_fallback = news_service.fetch_niche_tech_news()
+        if used_fallback:
+            flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
         if articles and len(articles) > 0:
             email_service.send_news_email(articles)
             flash("Email sent successfully!", 'success')
@@ -132,7 +136,9 @@ def update_keywords():
 def news_mood():
     """News Mood dashboard showing trending topics and sentiment"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, used_fallback = news_service.fetch_niche_tech_news()
+        if used_fallback:
+            flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
         mood_data = mood_service.analyze_news_mood(articles)
         return render_template('mood.html', mood_data=mood_data, articles=articles)
     except Exception as e:
@@ -144,7 +150,9 @@ def news_mood():
 def learning_paths():
     """Gamified learning paths for XR/3D/Game development"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, used_fallback = news_service.fetch_niche_tech_news()
+        if used_fallback:
+            flash("⚠️ Showing fallback articles due to NewsAPI rate limit.", 'warning')
         learning_data = gamification_service.get_learning_dashboard_data()
         return render_template('learning.html', learning_data=learning_data, articles=articles)
     except Exception as e:
@@ -156,7 +164,7 @@ def learning_paths():
 def api_articles():
     """API endpoint for fetching articles"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, _ = news_service.fetch_niche_tech_news()
         return jsonify({'success': True, 'articles': articles, 'count': len(articles)})
     except Exception as e:
         logger.error(f"API error: {e}")
@@ -166,7 +174,7 @@ def api_articles():
 def api_mood():
     """API endpoint for mood analysis"""
     try:
-        articles = news_service.fetch_niche_tech_news()
+        articles, _ = news_service.fetch_niche_tech_news()
         mood_data = mood_service.analyze_news_mood(articles)
         return jsonify({'success': True, 'mood_data': mood_data})
     except Exception as e:
